@@ -1,13 +1,15 @@
 import numpy as np
+from sympy import Derivative
 
-# --- Derivative calculation (h=1e-4 prevents 2nd-derivative precision loss) ---
-def derivative(f, x, h=1e-4):
+#Task 1A 
+#--- Derivative calculation---
+def derivative(f, x, h=1e-4): # Changed from 1e-6 to avoid dividing by zero in 2nd derivative
     return (f(x + h) - f(x)) / h
 
 def f(x):
-    return 4 * ((x - 2)**4)
+    return 4*((x-2)**4)
 
-# --- Newton method ---
+#---Newton method---
 def newton_method(init_guess, f, tolerance=1e-6, max_iterations=100):
     x = init_guess
 
@@ -18,45 +20,43 @@ def newton_method(init_guess, f, tolerance=1e-6, max_iterations=100):
         # Second Derivative
         f_double_prime_x = derivative(lambda x: derivative(f, x), x)
 
-        if abs(f_double_prime_x) < 1e-12:
+        if f_double_prime_x == 0:
+            #print("can't divide by zero")
             return None
         
-        # --- Newton Method ---
-        delta_x = -f_prime_x / f_double_prime_x
+        #---Newton Method---
+        delta_x = - f_prime_x / f_double_prime_x
 
-        # --- x update ---
+        #---x update---
         x += delta_x
+        # print(f"{x} \n ") # Commented out so it doesn't print 1000 times
         
         if abs(delta_x) < tolerance:
+            #print("Converged after", iteration + 1, "iterations.")
             return x
 
+    #print("Did not converge within", max_iterations, "iterations.")
     return None
 
-# Task 1A
-print("Task 1A result:", newton_method(21, f))
 
-# Task 1B
+newton_method(21,f)
+
+#Task 1B
+
+extrems=[]
 def f1(x):
-    return 2 * x**4 + x**3 - 3 * x**2 + 5
+    return (2*x**4 + x**3 - 3*x**2 + 5)
 
-def mult_newt(f, num_guesses, init_guess_range=[]):
-    extrems = []  
-    init_guesses = np.linspace(init_guess_range[0], init_guess_range[1], num_guesses)
-    
+
+def mult_newt(f,num_guesses,init_guess_range=[], ):
+    init_guesses=np.linspace(init_guess_range[0],init_guess_range[1],num_guesses )
     for i in range(num_guesses):
-        t = newton_method(init_guesses[i], f)
-        if t is not None:  
+        t=newton_method(init_guesses[i],f)
+        if t is not None:
             extrems.append(t)
     
     
     return np.unique(np.round(extrems, 4))
 
 
-found_extrema = mult_newt(f1, 1000, [-2, 2])
-print("Task 1B extrema (x-values):", found_extrema)
-
-
-for x_val in found_extrema:
-    second_deriv = derivative(lambda x: derivative(f1, x), x_val)
-    kind = "Local Minimum" if second_deriv > 0 else "Local Maximum"
-    print(f"x = {x_val:7.4f}, f(x) = {f1(x_val):7.4f} -> {kind}")
+print(mult_newt(f1,1000,[-2,2]))
