@@ -3,7 +3,7 @@ from sympy import Derivative
 
 #Task 1A 
 #--- Derivative calculation---
-def derivative(f, x, h=1e-4): # Changed from 1e-6 to avoid dividing by zero in 2nd derivative
+def derivative(f, x, h=1e-4): 
     return (f(x + h) - f(x)) / h
 
 def f(x):
@@ -57,6 +57,9 @@ def mult_newt(f,num_guesses,init_guess_range=[], ):
     
     
     return np.unique(np.round(extrems, 4))
+if __name__ == "___main___": 
+    e=mult_newt(f1,1000,[-2,2])
+    print(e)
 
-
-print(mult_newt(f1,1000,[-2,2]))
+    for i in range(len(e)):
+        print(f"value of extrema {1}: {f1(e[i])} \n")
